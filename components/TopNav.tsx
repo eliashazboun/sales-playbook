@@ -33,6 +33,12 @@ export default function TopNav() {
         <Link href="/listing" className={navClass("/listing")}>
           FB Listing Helper
         </Link>
+        <Link href="/test" className={navClass("/test")}>
+          Testing Grounds
+        </Link>
+        <Link href="#" className={navClass("#")}>
+          TBD
+        </Link>
       </div>
     </header>
   );

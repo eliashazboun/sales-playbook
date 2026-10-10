@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -10,7 +10,7 @@ export async function GET(
     if (!/^\d+$/.test(id)) {
       return NextResponse.json(
         { error: "Invalid inventory ID" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -20,13 +20,12 @@ export async function GET(
         headers: {
           Accept: "*/*",
           "Content-Type": "application/json",
-          Referer:
-            "https://barbourhendrickhonda.max.auto/",
+          Referer: "https://barbourhendrickhonda.max.auto/",
         },
 
         // Don't cache inventory data.
         cache: "no-store",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -34,7 +33,7 @@ export async function GET(
         {
           error: `MAX returned ${response.status}`,
         },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -42,18 +41,13 @@ export async function GET(
     const inventory = json.inventory;
 
     if (!inventory) {
-      return NextResponse.json(
-        { error: "Vehicle not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
     }
 
     const vehicle = inventory.vehicle;
 
     const carfax =
-      inventory.history?.find(
-        (item: any) => item.type === "CARFAX"
-      ) ?? null;
+      inventory.history?.find((item: any) => item.type === "CARFAX") ?? null;
 
     const photos =
       inventory.photos?.edges
@@ -61,9 +55,7 @@ export async function GET(
         .filter(Boolean) ?? [];
 
     const equipment =
-      vehicle?.equipment
-        ?.map((item: any) => item?.name)
-        .filter(Boolean) ?? [];
+      vehicle?.equipment?.map((item: any) => item?.name).filter(Boolean) ?? [];
 
     const options =
       vehicle?.options?.all
@@ -71,17 +63,14 @@ export async function GET(
         .map((option: any) => ({
           name: option.name,
           msrp: option.msrp?.amount ?? null,
-          features:
-            option.features?.filter(Boolean) ?? [],
+          features: option.features?.filter(Boolean) ?? [],
         })) ?? [];
 
     const benefits =
-      inventory.certified?.benefits?.map(
-        (benefit: any) => ({
-          name: benefit.name ?? "",
-          description: benefit.description ?? "",
-        })
-      ) ?? [];
+      inventory.certified?.benefits?.map((benefit: any) => ({
+        name: benefit.name ?? "",
+        description: benefit.description ?? "",
+      })) ?? [];
 
     // Strip HTML from dealer description.
     const description = (inventory.description ?? "")
@@ -106,31 +95,22 @@ export async function GET(
       vin: vehicle?.vin ?? "",
       stockNumber: inventory.stockNumber ?? "",
 
-      exteriorColor:
-        vehicle?.color?.name ||
-        vehicle?.color?.generic ||
-        "",
+      exteriorColor: vehicle?.color?.name || vehicle?.color?.generic || "",
 
       interiorColor:
         vehicle?.interior?.color?.name ||
         vehicle?.interior?.color?.generic ||
         "",
 
-      drivetrain:
-        vehicle?.ymmt?.drivetrain ?? "",
+      drivetrain: vehicle?.ymmt?.drivetrain ?? "",
 
-      transmission:
-        vehicle?.ymmt?.transmission ?? "",
+      transmission: vehicle?.ymmt?.transmission ?? "",
 
-      engine:
-        vehicle?.ymmt?.engine?.type ?? "",
+      engine: vehicle?.ymmt?.engine?.type ?? "",
 
-      price:
-        inventory.price?.listPrice?.amount ?? null,
+      price: inventory.price?.listPrice?.amount ?? null,
 
-      allInPrice:
-        inventory.price?.ftcPricing?.allInPrice
-          ?.amount ?? null,
+      allInPrice: inventory.price?.ftcPricing?.allInPrice?.amount ?? null,
 
       carfaxUrl: carfax?.url ?? null,
 
@@ -138,8 +118,15 @@ export async function GET(
 
       certification: {
         name: inventory.certified?.name ?? null,
+        isCertified: inventory.certified?.isCertified ?? false,
+        isDealerCertified: inventory.certified?.isDealerCertified ?? false,
+        isManufacturerCertified:
+          inventory.certified?.isManufacturerCertified ?? false,
         benefits,
       },
+      highlights: inventory.highlights ?? [],
+
+      optionsMsrp: vehicle?.options?.msrp?.amount ?? 0,
 
       equipment,
       options,
@@ -150,7 +137,7 @@ export async function GET(
 
     return NextResponse.json(
       { error: "Unable to retrieve vehicle." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
