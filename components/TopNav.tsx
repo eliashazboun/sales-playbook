@@ -34,7 +34,7 @@ export default function TopNav() {
           FB Listing Helper
         </Link>
         <Link href="/test" className={navClass("/test")}>
-          Testing Grounds
+          Nato Training
         </Link>
         <Link href="#" className={navClass("#")}>
           TBD
