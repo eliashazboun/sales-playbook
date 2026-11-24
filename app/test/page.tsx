@@ -544,7 +544,7 @@ export default function TestingGrounds() {
     const durationMs = performance.now() - startTimeRef.current;
 
     const result: QuizResult = {
-      id: crypto.randomUUID(),
+      id:`${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       date: new Date().toISOString(),
       score: finalAnswers.filter((answer) => answer.isCorrect).length,
       total: finalAnswers.length,
@@ -604,19 +604,7 @@ export default function TestingGrounds() {
     [phase, questions, index, answers, finishQuiz],
   );
 
-  const nextQuestion = useCallback(() => {
-    if (!lockedRef.current) return;
 
-    if (index === questions.length - 1) {
-      finishQuiz(answers);
-      return;
-    }
-
-    setIndex((previous) => previous + 1);
-    setSelected(null);
-    questionTimeRef.current = performance.now();
-    lockedRef.current = false;
-  }, [index, questions.length, answers, finishQuiz]);
 
   useEffect(() => {
     if (phase !== "quiz") return;

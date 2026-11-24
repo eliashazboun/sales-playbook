@@ -36,8 +36,8 @@ export default function TopNav() {
         <Link href="/test" className={navClass("/test")}>
           Nato Training
         </Link>
-        <Link href="#" className={navClass("#")}>
-          TBD
+        <Link href="/fuel" className={navClass("#")}>
+          Fuel Economy
         </Link>
       </div>
     </header>
